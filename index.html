@@ -1,29 +1,89 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-</head>
-<body style="margin: 0; overflow: hidden;">
-  <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: true;">
-    <a-marker preset="hiro">
-      <!-- Simple whiteboard model using primitives -->
-      <a-box position="0 0.25 0" depth="0.05" height="0.5" width="0.7" color="white">
-        <!-- Black frame around the whiteboard -->
-        <a-box position="0 0.275 0" depth="0.06" height="0.05" width="0.75" color="black"></a-box>
-        <a-box position="0 -0.275 0" depth="0.06" height="0.05" width="0.75" color="black"></a-box>
-        <a-box position="0.375 0 0" depth="0.06" height="0.6" width="0.05" color="black"></a-box>
-        <a-box position="-0.375 0 0" depth="0.06" height="0.6" width="0.05" color="black"></a-box>
-        
-        <!-- Whiteboard tray -->
-        <a-box position="0 -0.3 0.05" depth="0.1" height="0.05" width="0.6" color="gray"></a-box>
-      </a-box>
-      
-      <!-- Stand for the whiteboard -->
-      <a-cylinder position="0 -0.1 0" radius="0.05" height="0.2" color="gray"></a-cylinder>
-      <a-cylinder position="0 -0.25 0" radius="0.15" height="0.05" color="darkgray"></a-cylinder>
-    </a-marker>
-    <a-entity camera></a-entity>
-  </a-scene>
-</body>
+<!DOCTYPE html> 
+<html> 
+<head>     
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>     
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>     
+    <!-- Add script to create multiple student desks -->     
+    <script>         
+        // This function will run after the scene loads         
+        AFRAME.registerComponent('classroom', {             
+            init: function() {                 
+                // Create student desks in rows                 
+                const rows = 3;                 
+                const desksPerRow = 3;                 
+                const startX = -1.5;                 
+                const startZ = 0.8;                 
+                // REDUCED SPACING between desks
+                const spacingX = 1.0;                 
+                const spacingZ = 1.0;                                  
+                const scene = document.querySelector('a-marker');                                  
+                
+                // Create rows of desks                 
+                for (let row = 0; row < rows; row++) {                     
+                    for (let desk = 0; desk < desksPerRow; desk++) {                         
+                        // Calculate position                         
+                        const xPos = startX + (desk * spacingX);                         
+                        const zPos = startZ + (row * spacingZ);                                                  
+                        
+                        // Create and add the chair-table combination
+                        // FURTHER INCREASED SIZE of student desks                   
+                        const studentDesk = document.createElement('a-entity');                         
+                        studentDesk.setAttribute('gltf-model', 'chair_table.glb');                         
+                        studentDesk.setAttribute('position', {x: xPos, y: 0, z: zPos});                         
+                        studentDesk.setAttribute('rotation', {x: 0, y: 90, z: 0});                         
+                        studentDesk.setAttribute('scale', {x: 0.4, y: 0.4, z: 0.4});                                                  
+                        
+                        scene.appendChild(studentDesk);                     
+                    }                 
+                }             
+            }         
+        });     
+    </script> 
+</head> 
+<body style='margin: 0; overflow: hidden;'>     
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">         
+        <a-marker preset="hiro" classroom>             
+            <!-- Floor - KEEPING THE SAME SIZE as requested -->             
+            <a-entity                  
+                gltf-model="checkered_tile_floor.glb"                  
+                position="0 -0.3 0.5"                  
+                rotation="0 0 0"                  
+                scale="0.1 0.5 0.1">             
+            </a-entity>                          
+            
+            <!-- Teacher's desk - FURTHER INCREASED SIZE -->             
+            <a-entity                  
+                gltf-model="teacher_desk.glb"                  
+                position="0 0 -1.5"                  
+                rotation="0 360 0"                  
+                scale="0.8 0.8 0.75">             
+            </a-entity>                          
+            
+            <!-- Teacher's chair - FURTHER INCREASED SIZE -->             
+            <a-entity                  
+                gltf-model="teacher-chair.glb"                  
+                position="0 0.15 -2.2"                  
+                rotation="0 0 0"                  
+                scale="1.5 1.5 1.5">             
+            </a-entity>                          
+            
+            <!-- Mini cupboard - INCREASED SIZE AND MOVED BACK to align with whiteboard -->             
+            <a-entity                  
+                gltf-model="mini-cupboard.glb"                  
+                position="2 0 -3.5"                  
+                rotation="0 90 0"                  
+                scale="0.25 0.25 0.25">             
+            </a-entity>
+            
+            <!-- Whiteboard - INCREASED SIZE -->
+            <a-entity
+                gltf-model="whiteboard.glb"
+                position="0 0.5 -3.5"
+                rotation="0 90 0"
+                scale="0.13 0.13 0.13">
+            </a-entity>         
+        </a-marker>         
+        <a-entity camera></a-entity>     
+    </a-scene> 
+</body> 
 </html>
